@@ -1,7 +1,6 @@
-
 class Player(object):
 
-    def __init__(self, username="null", summonerID="null", MMR=-1, wins=-1, losses=-1, division=-1, divisionPoints=-1,tier=-1, honor=-1):
+    def __init__(self, username="null", summonerID="null", MMR=-1, wins=-1, losses=-1, division=-1, divisionPoints=-1, tier=-1, honor=-1):
         self.username = username
         self.summonerID = summonerID
         self.MMR = MMR
@@ -11,3 +10,9 @@ class Player(object):
         self.divisionPoints = divisionPoints
         self.tier = tier
         self.honor = honor
+
+    def getMMR(self):
+        return self.honor
+
+    def __str__(self):
+        return '{' + self.username + ': MMR_' + str(self.MMR) + '}'

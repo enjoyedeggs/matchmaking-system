@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Button, LEFT, RIGHT, Scrollbar, N, S, W, E
+from tkinter import Tk, Label, Button, LEFT, RIGHT, Scrollbar, Listbox, END, N, S, W, E, Y
 import Match as Ma
 import Team as Te
 import Player as Pl
@@ -10,27 +10,44 @@ class GUI:
     def __init__(self, master):
         self.master = master
         master.title("Matchmaking GUI")
+        master.geometry("1024x768")
 
-        self.PlayerQueueLabel = Label(master, text="Player Queue : ")
-        self.PlayerQueueLabel.grid(columnspan=1, sticky=W)
-        self.PlayerQueueLabel.grid(row=1, column=1)
+        self.playerQueueLabel = Label(master, text="Player Queue : ", font=("Times New Roman", 30))
+        self.playerQueueLabel.grid(columnspan=1, sticky=N + W)
+        self.playerQueueLabel.grid(row=0, column=1)
 
         self.playerQueueScrollBar = Scrollbar()
-        self.playerQueueScrollBar.grid(rowspan=10, sticky=W)
-        self.playerQueueScrollBar.grid(row=2, column=1)
+        self.playerQueueScrollBar.grid(row=1, column=1, rowspan=10, sticky=W)
 
-        self.matchLabel = Label(master, text="Matches : ")
-        self.matchLabel.grid(columnspan=1, sticky=E)
-        self.matchLabel.grid(row=1, column=3)
+        self.matchQueueScrollBar = Scrollbar()
+        self.matchQueueScrollBar.grid(row=1, column=3, rowspan=10, sticky=W)
 
-        self.greet_button = Button(master, text="Test", command=self.test)
-        self.greet_button.grid(row=3, column=3)
+        self.matchLabel = Label(master, text="Matches :", font=("Times New Roman", 30))
 
-        self.close_button = Button(master, text="Close", command=master.quit)
-        self.close_button.grid(row=2, column=2)
+        self.matchLabel.grid(columnspan=1, rowspan=3, row=0, column=3, sticky=N + W)
+
+        self.testButton = Button(master, text="Test", command=self.test)
+        self.testButton.grid(columnspan=1, sticky=E, row=2, column=3)
+
+        self.closeButton = Button(master, text="Close", command=master.quit)
+        self.closeButton.grid(row=2, column=2)
+
+        listbox = Listbox(root)
+        listbox.grid(row=1, column=0)
+
+        for i in range(100):
+            listbox.insert(END, i)
+
+        listbox.config(yscrollcommand=self.playerQueueScrollBar.set)
+        self.playerQueueScrollBar.config(command=listbox.yview)
 
     def test(self):
         print("hi")
+
+
+def generateRandomPlayer(self):
+    return Pl.Player()
+
 
 testPlayer = Pl.Player(username="BOB", summonerID=120385)
 print(testPlayer.username)
@@ -42,6 +59,8 @@ print(testTeam.players['player1'].summonerID)
 
 testMatch = Ma.Match()
 print(testMatch.teams)
+print(testMatch.teams['team1'])
+testMatch = Ma.Match(testTeam, testTeam)
 print(testMatch.teams['team1'])
 
 root = Tk()
