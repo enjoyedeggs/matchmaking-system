@@ -14,10 +14,10 @@ class GUI:
 
         self.playerQueueLabel = Label(master, text="Player Queue : ", font=("Times New Roman", 30))
         self.playerQueueLabel.grid(columnspan=1, sticky=N + W)
-        self.playerQueueLabel.grid(row=0, column=1)
+        self.playerQueueLabel.grid(row=0, column=0)
 
         self.playerQueueScrollBar = Scrollbar()
-        self.playerQueueScrollBar.grid(row=1, column=1, rowspan=10, sticky=W)
+        self.playerQueueScrollBar.grid(row=1, column=1, sticky=W)
 
         self.matchQueueScrollBar = Scrollbar()
         self.matchQueueScrollBar.grid(row=1, column=3, rowspan=10, sticky=W)
@@ -27,12 +27,12 @@ class GUI:
         self.matchLabel.grid(columnspan=1, rowspan=3, row=0, column=3, sticky=N + W)
 
         self.testButton = Button(master, text="Test", command=self.test)
-        self.testButton.grid(columnspan=1, sticky=E, row=2, column=3)
+        self.testButton.grid(columnspan=1, row=2, column=3, sticky=E)
 
         self.closeButton = Button(master, text="Close", command=master.quit)
         self.closeButton.grid(row=2, column=2)
 
-        listbox = Listbox(root)
+        listbox = Listbox(root, yscrollcommand = self.playerQueueScrollBar.set)
         listbox.grid(row=1, column=0)
 
         for i in range(100):
