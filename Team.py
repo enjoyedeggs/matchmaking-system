@@ -6,8 +6,9 @@ class Team(object):
                'player5': Pl.Player()}
 
     def getTeamMMR(self):
-        return self.players['player1'].getMMR() + self.players['player2'].getMMR() + self.players['player3'].getMMR() + self.players['player4'].getMMR() + self.players['player5'].getMMR()
-
+        return self.players['player1'].getMMR() + self.players['player2'].getMMR() + self.players['player3'].getMMR() + \
+               self.players['player4'].getMMR() + self.players['player5'].getMMR()
 
     def __str__(self):
-        return '{' + str(self.players['player1']) + ', ' + str(self.players['player2']) + ', ' + str(self.players['player3']) + ', ' + str(self.players['player4']) + ', ' + str(self.players['player5']) + '}'
+        return '{' + str(self.players['player1']) + ', ' + str(self.players['player2']) + ', ' + str(
+            self.players['player3']) + ', ' + str(self.players['player4']) + ', ' + str(self.players['player5']) + '}'
