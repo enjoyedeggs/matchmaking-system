@@ -40,7 +40,6 @@ class GUI:
 
         self.col6_frame = Frame(master)  # - Frame 6
         self.col6_frame.pack(side=LEFT)
-
         # -------------------------------------------------- FRAME 0 --------------------------------------------------
         self.spacing_col0 = Label(self.col0_frame, text="   ")  # - 3 spaces
         self.spacing_col0.config(height=2)
@@ -53,7 +52,7 @@ class GUI:
         self.spacing_col1.grid(row=2, column=1, sticky=W)  # -- for spacing purposes
 
         self.playerq_box = Text(self.playerq_frame)
-        self.playerq_box.config(height=35, width=25)  # - this should have 'state="disabled"'
+        self.playerq_box.config(height=36, width=25)  # - this should have 'state="disabled"'
         self.playerq_box.grid(row=3, column=1, sticky=W)
         # -------------------------------------------------- FRAME 2 --------------------------------------------------
         self.spacing_col2 = Label(self.col2_frame, text="  ")  # - 2 spaces
@@ -74,8 +73,15 @@ class GUI:
         self.spacing_col3.grid(row=2, column=3, sticky=W)  # -- for spacing purposes
 
         self.matches_box = Text(self.matchmaking_pr_frame)
-        self.matches_box.config(height=35, width=45, state="disabled")
+        self.matches_box.config(height=17, width=45, state="disabled")
         self.matches_box.grid(row=3, column=3, sticky=N)
+
+        self.spacing2_col3 = Label(self.matchmaking_pr_frame, text="\t")
+        self.spacing2_col3.grid(row=4, column=3, sticky=W)  # -- for spacing purposes
+
+        self.matches_box2 = Text(self.matchmaking_pr_frame)
+        self.matches_box2.config(height=17, width=45, state="disabled")
+        self.matches_box2.grid(row=5, column=3, sticky=N)
         # -------------------------------------------------- FRAME 4 --------------------------------------------------
         self.spacing_col4 = Label(self.col4_frame, text="  ")  # - 2 spaces
         self.spacing_col4.grid(row=0, column=4, sticky=W)  # -- for spacing purposes
@@ -95,8 +101,15 @@ class GUI:
         self.spacing_col5.grid(row=2, column=5, sticky=W)  # -- for spacing purposes
 
         self.finmatches_box = Text(self.finishmatch_frame)
-        self.finmatches_box.config(height=35, width=45, state="disabled")
+        self.finmatches_box.config(height=17, width=45, state="disabled")
         self.finmatches_box.grid(row=3, column=5, sticky=N)
+
+        self.spacing2_col5 = Label(self.finishmatch_frame, text="\t")
+        self.spacing2_col5.grid(row=4, column=5, sticky=W)  # -- for spacing purposes
+
+        self.finmatches_box2 = Text(self.finishmatch_frame)
+        self.finmatches_box2.config(height=17, width=45, state="disabled")
+        self.finmatches_box2.grid(row=5, column=5, sticky=N)
         # -------------------------------------------------- FRAME 6 --------------------------------------------------
         self.spacing_col4 = Label(self.col6_frame, text="  ")  # - 2 spaces
         self.spacing_col4.grid(row=0, column=6, sticky=W)  # -- for spacing purposes
