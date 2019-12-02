@@ -6,7 +6,6 @@ import Player as Pl
 
 print("hi, this is Marissa :)")
 
-
 class GUI:
     def __init__(self, master): #-- magic funtion that builds GUI
         self.master = master
