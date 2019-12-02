@@ -8,12 +8,15 @@ print("hi, this is Marissa :)")
 
 
 class GUI:
+
     def __init__(self, master): #-- magic funtion that builds GUI
         self.master = master
         master.title("Matchmaking GUI")
-        # master.geometry("1024x768") ### NOT SURE WHY YOU MADE IT THAT DIMENSION, BRADLEY, BUT OKAY
 
         # -------------------------------------------------- FRAMES -------------------------------------------------
+        self.button_frame = Frame(master)  # - Frame BOTTOM
+        self.button_frame.pack(side=BOTTOM, fill=X, padx=15)
+
         self.col0_frame = Frame(master)  # - Frame 0
         self.col0_frame.pack(side=LEFT)
 
@@ -40,6 +43,7 @@ class GUI:
 
         self.col6_frame = Frame(master)  # - Frame 6
         self.col6_frame.pack(side=LEFT)
+
         # -------------------------------------------------- FRAME 0 --------------------------------------------------
         self.spacing_col0 = Label(self.col0_frame, text="   ")  # - 3 spaces
         self.spacing_col0.config(height=2)
@@ -73,15 +77,8 @@ class GUI:
         self.spacing_col3.grid(row=2, column=3, sticky=W)  # -- for spacing purposes
 
         self.matches_box = Text(self.matchmaking_pr_frame)
-        self.matches_box.config(height=17, width=45, state="disabled")
+        self.matches_box.config(height=36, width=45, state="disabled")
         self.matches_box.grid(row=3, column=3, sticky=N)
-
-        self.spacing2_col3 = Label(self.matchmaking_pr_frame, text="\t")
-        self.spacing2_col3.grid(row=4, column=3, sticky=W)  # -- for spacing purposes
-
-        self.matches_box2 = Text(self.matchmaking_pr_frame)
-        self.matches_box2.config(height=17, width=45, state="disabled")
-        self.matches_box2.grid(row=5, column=3, sticky=N)
         # -------------------------------------------------- FRAME 4 --------------------------------------------------
         self.spacing_col4 = Label(self.col4_frame, text="  ")  # - 2 spaces
         self.spacing_col4.grid(row=0, column=4, sticky=W)  # -- for spacing purposes
@@ -101,27 +98,36 @@ class GUI:
         self.spacing_col5.grid(row=2, column=5, sticky=W)  # -- for spacing purposes
 
         self.finmatches_box = Text(self.finishmatch_frame)
-        self.finmatches_box.config(height=17, width=45, state="disabled")
+        self.finmatches_box.config(height=36, width=45, state="disabled")
         self.finmatches_box.grid(row=3, column=5, sticky=N)
-
-        self.spacing2_col5 = Label(self.finishmatch_frame, text="\t")
-        self.spacing2_col5.grid(row=4, column=5, sticky=W)  # -- for spacing purposes
-
-        self.finmatches_box2 = Text(self.finishmatch_frame)
-        self.finmatches_box2.config(height=17, width=45, state="disabled")
-        self.finmatches_box2.grid(row=5, column=5, sticky=N)
         # -------------------------------------------------- FRAME 6 --------------------------------------------------
         self.spacing_col4 = Label(self.col6_frame, text="  ")  # - 2 spaces
         self.spacing_col4.grid(row=0, column=6, sticky=W)  # -- for spacing purposes
-        # -------------------------------------------------- FRAME ? --------------------------------------------------
+        # -------------------------------------------------- FRAME BOTTOM --------------------------------------------------
+        self.accept_p_button = Button(self.button_frame, text="   ACCEPT PLAYERS   ", command=self.accept_players())
+        self.accept_p_button.grid(row=4, column=1, sticky=W)
+
+        self.stop_p_button = Button(self.button_frame, text="   STOP   ")
+        self.stop_p_button.grid(row=4, column=3, sticky=E, padx=80)
 
 
-    def test(self):
+    def accept_players(self):
+        tPlayer = Pl.Player(username="BOB", summonerID=120385)
+        print(tPlayer.username)
+
+        self.playerq_box.insert(END, tPlayer.username + " - " + str(tPlayer.summonerID) + "\n")
+
+
+    def test(self):  # - ?
         print("hi")
 
+root = Tk()
+gui = GUI(root)
+root.mainloop()
 
+'''
 def generateRandomPlayer(self):
-    return Pl.Player()
+    return Pl.Player();
 
 
 testPlayer = Pl.Player(username="BOB", summonerID=120385)
@@ -137,7 +143,4 @@ print(testMatch.teams)
 print(testMatch.teams['team1'])
 testMatch = Ma.Match(testTeam, testTeam)
 print(testMatch.teams['team1'])
-
-root = Tk()
-gui = GUI(root)
-root.mainloop()
+'''
