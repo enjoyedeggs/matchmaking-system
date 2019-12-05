@@ -165,5 +165,3 @@ testMatchListManager.insertPlayer(testPlayer11)
 print(testMatchListManager.divisionToString(8))
 print(testMatchListManager.finishedMatchesToString())
 print(testMatchListManager.popFinishedMatch())
-
-

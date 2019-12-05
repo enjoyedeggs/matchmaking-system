@@ -44,7 +44,7 @@ class Match(object):
     def getMaximumMatchDivision(self):
         if (self.teams['team2'].getMaximumDivision() == -1):
             return self.teams['team1'].getMaximumDivision()
-        return self.teams['team1'].getaximumDivision() if (
+        return self.teams['team1'].getMaximumDivision() if (
                     self.teams['team1'].getMaximumDivision() < self.teams['team2'].getMaximumDivision()) else self.teams[
             'team2'].getMaximumDivision()
 
