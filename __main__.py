@@ -125,7 +125,7 @@ root = Tk()
 gui = GUI(root)
 root.mainloop()
 
-'''
+
 def generateRandomPlayer(self):
     return Pl.Player();
 
@@ -165,5 +165,3 @@ testMatchListManager.insertPlayer(testPlayer11)
 print(testMatchListManager.divisionToString(8))
 print(testMatchListManager.finishedMatchesToString())
 print(testMatchListManager.popFinishedMatch())
-
-
