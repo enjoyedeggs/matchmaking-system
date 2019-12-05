@@ -125,7 +125,7 @@ root = Tk()
 gui = GUI(root)
 root.mainloop()
 
-'''
+
 def generateRandomPlayer(self):
     return Pl.Player();
 
