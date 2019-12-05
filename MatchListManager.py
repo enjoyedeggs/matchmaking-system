@@ -46,6 +46,11 @@ class MatchListManager(object):
             returnString += match.__str__() + "\n"
         return returnString
 
+    def __str__(self):
+        returnString = ""
+        for i in range(self.divisions):
+            returnString += self.divisionToString(i+1)
+        return returnString
 
         
         

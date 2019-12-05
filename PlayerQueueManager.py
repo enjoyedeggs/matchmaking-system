@@ -1,6 +1,5 @@
 
 class PlayerQueueManager(object):
-    PlayerQueue = []
 
     def __init__(self):
         self.PlayerQueue = []
@@ -10,7 +9,8 @@ class PlayerQueueManager(object):
         self.PlayerQueue.insert(0, player)
 
     def removePlayer(self):
-        return self.PlayerQueue.pop()
+        if(self.PlayerQueue):
+            return self.PlayerQueue.pop()
 
     def insertPlayerPriority(self, priorityPercentage, player):
         self.PlayerQueue.insert((len(self.PlayerQueue)/(priorityPercentage/100)), player)

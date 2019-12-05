@@ -16,7 +16,7 @@ noun = ["Bread", "Paper", "Diamond", "Queen", "Pizza", "Hat", "Law", "Chocolate"
 
 tier = [27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0]
 
-weights = [0.012, 0.027, 0.04, 0.1, 0.18, 0.12, 0.35, 1.18, 1.3, 1.4, 1.6, 5.2, 4.5, 6.1, 4.8, 12, 9.5, 9.5, 5, 9.1, 
+weights = [0.012, 0.027, 0.04, 0.1, 0.18, 0.12, 0.35, 1.18, 1.3, 1.4, 1.6, 5.2, 4.5, 6.1, 4.8, 12, 9.5, 9.5, 5, 9.1,
     9.4, 6.1, 2.9, 3.7, 2.5, 1.3, .52, 0.079]
 
 userValue = 10000000
@@ -36,3 +36,17 @@ for x in range(10):
     Pl.MMR = 500+(placement[0]*250) + randint(-400, 600)
     userValue += 1
     print(Pl.username,"\nID:", Pl.summonerID,"\nGenerated Placement:", placement[0],"\nDivision:", Pl.division,"\nTier:", Pl.tier,"\nHonor:", Pl.honor,"\nMMR:", Pl.MMR, "\nWins:", Pl.wins, "\nLosses", Pl.losses,"\n")
+
+
+def generateRandomPlayer():
+    player = Pl.Player()
+    player.username = adj[randint(0, len(adj) - 1)] + noun[randint(0, len(noun) - 1)]
+    placement = random.choices(tier, weights, k=1)
+    player.division = int(placement[0] / 4)
+    player.tier = placement[0] % 4
+    player.honor = randint(1, 15)
+    player.wins = randint(50, 500)
+    player.losses = Pl.wins + randint(-50, 100)
+    player.MMR = 500 + (placement[0] * 250) + randint(-400, 600)
+    print(placement[0])
+    return player

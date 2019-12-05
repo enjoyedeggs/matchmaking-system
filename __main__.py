@@ -3,7 +3,9 @@ from tkinter import ttk
 import Match as Ma
 import Team as Te
 import Player as Pl
+import PlayerQueueManager as Pqm
 import MatchListManager as Mlm
+import PlayerRandomizer as Pr
 
 print("hi, this is Marissa :)")
 
@@ -77,7 +79,7 @@ class GUI:
         self.spacing_col3.grid(row=2, column=3, sticky=W)  # -- for spacing purposes
 
         self.matches_box = Text(self.matchmaking_pr_frame)
-        self.matches_box.config(height=36, width=45, state="disabled")
+        self.matches_box.config(height=36, width=55)
         self.matches_box.grid(row=3, column=3, sticky=N)
         # -------------------------------------------------- FRAME 4 --------------------------------------------------
         self.spacing_col4 = Label(self.col4_frame, text="  ")  # - 2 spaces
@@ -98,25 +100,63 @@ class GUI:
         self.spacing_col5.grid(row=2, column=5, sticky=W)  # -- for spacing purposes
 
         self.finmatches_box = Text(self.finishmatch_frame)
-        self.finmatches_box.config(height=36, width=45, state="disabled")
+        self.finmatches_box.config(height=36, width=45)
         self.finmatches_box.grid(row=3, column=5, sticky=N)
         # -------------------------------------------------- FRAME 6 --------------------------------------------------
         self.spacing_col4 = Label(self.col6_frame, text="  ")  # - 2 spaces
         self.spacing_col4.grid(row=0, column=6, sticky=W)  # -- for spacing purposes
         # -------------------------------------------------- FRAME BOTTOM --------------------------------------------------
-        self.accept_p_button = Button(self.button_frame, text="   ACCEPT PLAYERS   ", command=self.accept_players())
+        self.accept_p_button = Button(self.button_frame, text="   ACCEPT PLAYERS   ", command=self.acceptPlayer)
         self.accept_p_button.grid(row=4, column=1, sticky=W)
+
+        self.accept_p_button = Button(self.button_frame, text="   INSERT PLAYER INTO MATCH MANAGER   ", command=self.popPlayerToMatchManager)
+        self.accept_p_button.grid(row=4, column=2, sticky=W)
 
         self.stop_p_button = Button(self.button_frame, text="   STOP   ")
         self.stop_p_button.grid(row=4, column=3, sticky=E, padx=80)
 
+        self.stop_p_button = Button(self.button_frame, text="   Cycle 100   ", command=self.cycle100)
+        self.stop_p_button.grid(row=4, column=4, sticky=E, padx=80)
 
-    def accept_players(self):
-        tPlayer = Pl.Player(username="BOB", summonerID=120385)
-        print(tPlayer.username)
+        self.matchListManager = Mlm.MatchListManager(36, 1000, 4)
+        self.playerQueueManager = Pqm.PlayerQueueManager()
+        self.matches_box.insert(END, "spamsdgf" + "\n")
+        self.playerq_box.insert(END, "spamsdgf" + "\n")
 
-        self.playerq_box.insert(END, tPlayer.username + " - " + str(tPlayer.summonerID) + "\n")
 
+    def acceptPlayer(self):
+        tPlayer = Pr.generateRandomPlayer()
+        self.playerQueueManager.insertPlayer(tPlayer)
+        self.updatePlayerQueue()
+
+    def updatePlayerQueue(self):
+        self.playerq_box.delete(1.0, END)
+        for player in self.playerQueueManager.PlayerQueue:
+            self.playerq_box.insert(END, player.username + " - " + str(player.MMR) + "\n")
+
+    def updateMatchList(self):
+        self.matches_box.delete(1.0, END)
+        for division in range(self.matchListManager.divisions):
+            self.matches_box.insert(END, self.matchListManager.divisionToString(division) + "\n")
+
+    def updateFinishedMatchList(self):
+        self.finmatches_box.delete(1.0, END)
+        for match in self.matchListManager.finishedMatchArray:
+            self.finmatches_box.insert(match.__str__() + "\n")
+
+    def updateAll(self):
+        self.updatePlayerQueue()
+        self.updateMatchList()
+        self.updateFinishedMatchList()
+
+    def popPlayerToMatchManager(self):
+        self.matchListManager.insertPlayer(self.playerQueueManager.removePlayer())
+        self.updateAll()
+
+    def cycle100(self):
+        for i in range(100):
+            self.acceptPlayer()
+            self.popPlayerToMatchManager()
 
     def test(self):  # - ?
         print("hi")
@@ -141,6 +181,8 @@ testPlayer9 = Pl.Player(username="Japan", summonerID=1201235, division=4, MMR=20
 testPlayer10 = Pl.Player(username="America", summonerID=120981, division=4, MMR=2000, tier=1)
 testPlayer11 = Pl.Player(username="UK", summonerID=120985, division=4, MMR=2000, tier=1)
 testPlayer12 = Pl.Player(username="Bread", summonerID=1209823, division=4, MMR=3100, tier=1)
+
+
 
 
 print("\n\n")
