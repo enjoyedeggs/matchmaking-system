@@ -12,7 +12,16 @@ class Player(object):
         self.honor = honor
 
     def getMMR(self):
-        return self.honor
+        return self.MMR
+
+    def getDivision(self):
+        return self.division
+    
+    def getTier(self):
+        return self.tier
+
+    def getSummonerID(self):
+        return self.summonerID
 
     def __str__(self):
         return '{' + self.username + ': MMR_' + str(self.MMR) + '}'
