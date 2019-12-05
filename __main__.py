@@ -3,6 +3,7 @@ from tkinter import ttk
 import Match as Ma
 import Team as Te
 import Player as Pl
+import MatchListManager as Mlm
 
 print("hi, this is Marissa :)")
 
@@ -128,18 +129,41 @@ root.mainloop()
 def generateRandomPlayer(self):
     return Pl.Player();
 
+testPlayer1 = Pl.Player(username="BOB", summonerID=120385, division=4, MMR=2000, tier=1)
+testPlayer2 = Pl.Player(username="Jeff", summonerID=120386, division=4, MMR=2000, tier=3)
+testPlayer3 = Pl.Player(username="dfs", summonerID=120387, division=4, MMR=2000, tier=1)
+testPlayer4 = Pl.Player(username="Basdf", summonerID=1123420388, division=4, MMR=2000, tier=1)
+testPlayer5 = Pl.Player(username="asvcx", summonerID=120389, division=4, MMR=2000, tier=1)
+testPlayer6 = Pl.Player(username="Holland", summonerID=1201245390, division=4, MMR=2000, tier=1)
+testPlayer7 = Pl.Player(username="Netherlands", summonerID=120412495, division=4, MMR=2000, tier=1)
+testPlayer8 = Pl.Player(username="Eu", summonerID=120134595, division=4, MMR=2000, tier=1)
+testPlayer9 = Pl.Player(username="Japan", summonerID=1201235, division=4, MMR=2000, tier=1)
+testPlayer10 = Pl.Player(username="America", summonerID=120981, division=4, MMR=2000, tier=1)
+testPlayer11 = Pl.Player(username="UK", summonerID=120985, division=4, MMR=2000, tier=1)
+testPlayer12 = Pl.Player(username="Bread", summonerID=1209823, division=4, MMR=3100, tier=1)
 
-testPlayer = Pl.Player(username="BOB", summonerID=120385)
-print(testPlayer.username)
 
-testTeam = Te.Team()
-testTeam.players['player1'] = testPlayer
-print(testTeam.players['player1'])
-print(testTeam.players['player1'].summonerID)
+print("\n\n")
+testMatchListManager = Mlm.MatchListManager(36, 1000, 4)
+testMatchListManager.insertPlayer(testPlayer1)
+print(testMatchListManager.divisionToString(4))
+testMatchListManager.insertPlayer(testPlayer2)
+print(testMatchListManager.divisionToString(8))
+print(testMatchListManager.divisionToString(16))
+testMatchListManager.insertPlayer(testPlayer3)
+testMatchListManager.insertPlayer(testPlayer4)
+testMatchListManager.insertPlayer(testPlayer5)
+testMatchListManager.insertPlayer(testPlayer6)
+testMatchListManager.insertPlayer(testPlayer7)
+testMatchListManager.insertPlayer(testPlayer8)
+testMatchListManager.insertPlayer(testPlayer9)
+testMatchListManager.insertPlayer(testPlayer10)
+testMatchListManager.insertPlayer(testPlayer12)
+print(testMatchListManager.divisionToString(8))
+print(testMatchListManager.divisionToString(16))
+testMatchListManager.insertPlayer(testPlayer11)
+print(testMatchListManager.divisionToString(8))
+print(testMatchListManager.finishedMatchesToString())
+print(testMatchListManager.popFinishedMatch())
 
-testMatch = Ma.Match()
-print(testMatch.teams)
-print(testMatch.teams['team1'])
-testMatch = Ma.Match(testTeam, testTeam)
-print(testMatch.teams['team1'])
-'''
+
