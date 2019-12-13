@@ -59,5 +59,5 @@ class Team(object):
         return maximumDivision
 
     def __str__(self):
-        return '{' + str(self.players['player1']) + ', ' + str(self.players['player2']) + ', ' + str(
-            self.players['player3']) + ', ' + str(self.players['player4']) + ', ' + str(self.players['player5']) + '}'
+        return '{' + str(self.players['player1']) + ',\n' + str(self.players['player2']) + ',\n' + str(
+            self.players['player3']) + ',\n' + str(self.players['player4']) + ',\n' + str(self.players['player5']) + '}'

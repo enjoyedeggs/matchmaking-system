@@ -14,17 +14,19 @@ class MatchListManager(object):
             
     def insertPlayer(self, player: Ml.Pl.Player):
         playerCurrentDivision = ((player.getTier() * 4) + (player.getDivision()))
-        currentLinkedList = playerCurrentDivision - 1
+        currentLinkedList = int(playerCurrentDivision - 1)
         divisionDeviation = 0
-        
         while(divisionDeviation <= self.maxDivisionDifference):
             if(not((currentLinkedList + divisionDeviation) >= self.divisions)):
                 if(self.matchListArray[currentLinkedList + divisionDeviation].insertPlayer(player)):
                     return True
-                    
-            if(not((currentLinkedList - divisionDeviation) < 0) and not(divisionDeviation == 0)):
-               if(self.matchListArray[currentLinkedList - divisionDeviation].insertPlayer(player)):
-                   return True
+
+            try:
+                if(not((currentLinkedList - divisionDeviation) <= 0) and not(divisionDeviation == 0)):
+                   if(self.matchListArray[currentLinkedList - divisionDeviation].insertPlayer(player)):
+                       return True
+            except IndexError:
+                null
                
             divisionDeviation += 1
             
@@ -35,16 +37,21 @@ class MatchListManager(object):
         self.finishedMatchArray.append(match)
 
     def popFinishedMatch(self):
-        return self.finishedMatchArray.pop()
+        if (self.finishedMatchArray):
+            return self.finishedMatchArray.pop()
 
     def divisionToString(self, division):
-        return "Division: " + str(division) + "\n\n" + self.matchListArray[division - 1].__str__()
+        return "Division: " + str(division + 1) + "\n\n" + self.matchListArray[division - 1].__str__()
 
     def finishedMatchesToString(self):
         returnString = "FinishedMatches: \n"
         for match in self.finishedMatchArray:
             returnString += match.__str__() + "\n"
         return returnString
+
+    def removePlayer(self):
+        if (self.finishedMatchArray):
+            return self.finishedMatchArray.pop()
 
     def __str__(self):
         returnString = ""

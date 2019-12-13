@@ -20,6 +20,9 @@ class Player(object):
     def getTier(self):
         return self.tier
 
+    def getTotalDivision(self):
+        return (tier * 4) + division
+
     def getSummonerID(self):
         return self.summonerID
 

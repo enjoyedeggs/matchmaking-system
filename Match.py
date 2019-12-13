@@ -26,7 +26,7 @@ class Match(object):
         return False
     
     def evenTeamMMR(self):
-        return #placeholder to be finished later
+        return
 
     def getAverageMatchMMR(self):
         return (self.teams['team1'].getAverageTeamMMR() + self.teams['team2'].getAverageTeamMMR()) / 2
@@ -55,8 +55,9 @@ class Match(object):
                     self.teams['team1'].getMinimumDivision() > self.teams['team2'].getMinimumDivision()) else self.teams[
             'team2'].getMinimumDivision()
 
+
     def isMatchFull(self):
         return (self.teams['team1'].isTeamFull() and self.teams['team2'].isTeamFull())
 
     def __str__(self):
-        return "Match ID: " + str(self.id) + "\n" + self.teams['team1'].__str__() + "\n" + self.teams['team2'].__str__() + "\n"
+        return "Match ID: " + str(self.id) + "\nTeam 1:\n" + self.teams['team1'].__str__() + "\nTeam 2:\n" + self.teams['team2'].__str__() + "\n"

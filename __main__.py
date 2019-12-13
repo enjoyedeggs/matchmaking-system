@@ -1,5 +1,10 @@
 from tkinter import *
 from tkinter import ttk
+import zmq
+import time
+import zlib
+import pickle
+from threading import Thread
 import Match as Ma
 import Team as Te
 import Player as Pl
@@ -7,11 +12,9 @@ import PlayerQueueManager as Pqm
 import MatchListManager as Mlm
 import PlayerRandomizer as Pr
 
-print("hi, this is Marissa :)")
-
 class GUI:
 
-    def __init__(self, master): #-- magic funtion that builds GUI
+    def __init__(self, master):  # -- magic funtion that builds GUI
         self.master = master
         master.title("Matchmaking GUI")
 
@@ -58,7 +61,7 @@ class GUI:
         self.spacing_col1.grid(row=2, column=1, sticky=W)  # -- for spacing purposes
 
         self.playerq_box = Text(self.playerq_frame)
-        self.playerq_box.config(height=36, width=25)  # - this should have 'state="disabled"'
+        self.playerq_box.config(height=36, width=25)
         self.playerq_box.grid(row=3, column=1, sticky=W)
         # -------------------------------------------------- FRAME 2 --------------------------------------------------
         self.spacing_col2 = Label(self.col2_frame, text="  ")  # - 2 spaces
@@ -67,11 +70,12 @@ class GUI:
         self.matchmaking_pr_title = Label(self.matchmaking_pr_frame, text="Matchmaking Process")
         self.matchmaking_pr_title.grid(row=1, column=3, sticky=W)
 
-        self.matches_option = ttk.Combobox(self.matchmaking_pr_frame, values=[
-                                                                    "Division1",
-                                                                    "Division2",
-                                                                    "Division3",
-                                                                    "Division4"])
+        divisions = []
+        for i in range(27):
+            divisions.append("Division-" + str(i + 1))
+        divisions.append("All")
+
+        self.matches_option = ttk.Combobox(self.matchmaking_pr_frame, values=divisions)
         self.matches_option.grid(row=1, column=3, sticky=E)
         self.matches_option.current(0)
 
@@ -88,11 +92,7 @@ class GUI:
         self.finishmatches_title = Label(self.finishmatch_frame, text="Finished Matches")
         self.finishmatches_title.grid(row=1, column=5, sticky=W)
 
-        self.finishmatches_option = ttk.Combobox(self.finishmatch_frame, values=[
-                                                                        "Division1",
-                                                                        "Division2",
-                                                                        "Division3",
-                                                                        "Division4"])
+        self.finishmatches_option = ttk.Combobox(self.finishmatch_frame, values=divisions)
         self.finishmatches_option.grid(row=1, column=5, sticky=E)
         self.finishmatches_option.current(0)
 
@@ -100,34 +100,38 @@ class GUI:
         self.spacing_col5.grid(row=2, column=5, sticky=W)  # -- for spacing purposes
 
         self.finmatches_box = Text(self.finishmatch_frame)
-        self.finmatches_box.config(height=36, width=45)
+        self.finmatches_box.config(height=36, width=60)
         self.finmatches_box.grid(row=3, column=5, sticky=N)
         # -------------------------------------------------- FRAME 6 --------------------------------------------------
         self.spacing_col4 = Label(self.col6_frame, text="  ")  # - 2 spaces
         self.spacing_col4.grid(row=0, column=6, sticky=W)  # -- for spacing purposes
-        # -------------------------------------------------- FRAME BOTTOM --------------------------------------------------
-        self.accept_p_button = Button(self.button_frame, text="   ACCEPT PLAYERS   ", command=self.acceptPlayer)
+        # -------------------------------------------------- FRAME BOTTOM ----------------------------------------------
+        self.accept_p_button = Button(self.button_frame, text="   Accept Players   ", command=self.acceptPlayers)
         self.accept_p_button.grid(row=4, column=1, sticky=W)
 
-        self.accept_p_button = Button(self.button_frame, text="   INSERT PLAYER INTO MATCH MANAGER   ", command=self.popPlayerToMatchManager)
+        self.accept_p_button = Button(self.button_frame, text="   Start Match Manager   ",
+                                      command=self.startMatchManager)
         self.accept_p_button.grid(row=4, column=2, sticky=W)
 
-        self.stop_p_button = Button(self.button_frame, text="   STOP   ")
-        self.stop_p_button.grid(row=4, column=3, sticky=E, padx=80)
+        self.accept_p_button = Button(self.button_frame, text="   Send Matches   ", command=self.startMatchSender)
+        self.accept_p_button.grid(row=4, column=3, sticky=W)
 
-        self.stop_p_button = Button(self.button_frame, text="   Cycle 100   ", command=self.cycle100)
+        self.stop_p_button = Button(self.button_frame, text="   STOP   ",command=quit)
         self.stop_p_button.grid(row=4, column=4, sticky=E, padx=80)
 
-        self.matchListManager = Mlm.MatchListManager(36, 1000, 4)
+        self.startTestButton = Button(self.button_frame, text="   Start Test Script   ", command=self.startTestScript)
+        self.startTestButton.grid(row=4, column=5, sticky=E, padx=80)
+
+        self.matchListManager = Mlm.MatchListManager(28, 500, 4)
         self.playerQueueManager = Pqm.PlayerQueueManager()
-        self.matches_box.insert(END, "spamsdgf" + "\n")
-        self.playerq_box.insert(END, "spamsdgf" + "\n")
+        self.playerRandomizer = Pr.PlayerRandomizer()
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.PAIR)
+        self.context2 = zmq.Context()
+        self.socket2 = self.context2.socket(zmq.PAIR)
 
-
-    def acceptPlayer(self):
-        tPlayer = Pr.generateRandomPlayer()
-        self.playerQueueManager.insertPlayer(tPlayer)
-        self.updatePlayerQueue()
+    def acceptPlayers(self):
+        self.openQueueToOutside()
 
     def updatePlayerQueue(self):
         self.playerq_box.delete(1.0, END)
@@ -136,13 +140,21 @@ class GUI:
 
     def updateMatchList(self):
         self.matches_box.delete(1.0, END)
-        for division in range(self.matchListManager.divisions):
-            self.matches_box.insert(END, self.matchListManager.divisionToString(division) + "\n")
+        if (self.matches_option.current() == 27):
+            for division in range(self.matchListManager.divisions):
+                self.matches_box.insert(END, self.matchListManager.divisionToString(division) + "\n")
+        else:
+            self.matches_box.insert(END, self.matchListManager.divisionToString(int(self.matches_option.current())) + "\n")
 
     def updateFinishedMatchList(self):
         self.finmatches_box.delete(1.0, END)
-        for match in self.matchListManager.finishedMatchArray:
-            self.finmatches_box.insert(match.__str__() + "\n")
+        if (self.finishmatches_option.current() == 27):
+            for match in self.matchListManager.finishedMatchArray:
+                self.finmatches_box.insert(END, match.__str__() + "\n")
+        else:
+            for match in self.matchListManager.finishedMatchArray:
+                if (match.getMaximumMatchDivision() == int(self.finishmatches_option.current())):
+                    self.finmatches_box.insert(END, match.__str__() + "\n")
 
     def updateAll(self):
         self.updatePlayerQueue()
@@ -158,52 +170,47 @@ class GUI:
             self.acceptPlayer()
             self.popPlayerToMatchManager()
 
-    def test(self):  # - ?
-        print("hi")
+    def recievePlayers(self):
+        while(1==1):
+            player = self.socket.recv()
+            player = zlib.decompress(player)
+            player = pickle.loads(player)
+            self.playerQueueManager.insertPlayer(player)
+            self.updatePlayerQueue()
+
+    def openQueueToOutside(self):
+        self.socket.bind("tcp://*:1111")
+        thread = Thread(target=self.recievePlayers, args=())
+        thread.start()
+        #thread.join()
+
+    def startTestScript(self):
+        self.playerRandomizer.automaticRandomizedMain()
+
+    def runMatchManager(self):
+        while(1==1):
+            if(not self.playerQueueManager.isEmpty()):
+                self.popPlayerToMatchManager()
+                self.updateAll()
+
+    def startMatchManager(self):
+        thread = Thread(target=self.runMatchManager, args=())
+        thread.start()
+
+    def runMatchSender(self):
+        while(1==1):
+            match = self.matchListManager.popFinishedMatch()
+            pickleObj = pickle.dumps(match, protocol=-1)
+            self.socket.send(zlib.compress(pickleObj))
+            self.updateFinishedMatchList()
+
+    def startMatchSender(self):
+        self.socket2.connect("tcp://localhost:1112")
+        thread = Thread(target=self.runMatchSender, args=())
+        thread.start()
+
+
 
 root = Tk()
 gui = GUI(root)
 root.mainloop()
-
-
-def generateRandomPlayer(self):
-    return Pl.Player();
-
-testPlayer1 = Pl.Player(username="BOB", summonerID=120385, division=4, MMR=2000, tier=1)
-testPlayer2 = Pl.Player(username="Jeff", summonerID=120386, division=4, MMR=2000, tier=3)
-testPlayer3 = Pl.Player(username="dfs", summonerID=120387, division=4, MMR=2000, tier=1)
-testPlayer4 = Pl.Player(username="Basdf", summonerID=1123420388, division=4, MMR=2000, tier=1)
-testPlayer5 = Pl.Player(username="asvcx", summonerID=120389, division=4, MMR=2000, tier=1)
-testPlayer6 = Pl.Player(username="Holland", summonerID=1201245390, division=4, MMR=2000, tier=1)
-testPlayer7 = Pl.Player(username="Netherlands", summonerID=120412495, division=4, MMR=2000, tier=1)
-testPlayer8 = Pl.Player(username="Eu", summonerID=120134595, division=4, MMR=2000, tier=1)
-testPlayer9 = Pl.Player(username="Japan", summonerID=1201235, division=4, MMR=2000, tier=1)
-testPlayer10 = Pl.Player(username="America", summonerID=120981, division=4, MMR=2000, tier=1)
-testPlayer11 = Pl.Player(username="UK", summonerID=120985, division=4, MMR=2000, tier=1)
-testPlayer12 = Pl.Player(username="Bread", summonerID=1209823, division=4, MMR=3100, tier=1)
-
-
-
-
-print("\n\n")
-testMatchListManager = Mlm.MatchListManager(36, 1000, 4)
-testMatchListManager.insertPlayer(testPlayer1)
-print(testMatchListManager.divisionToString(4))
-testMatchListManager.insertPlayer(testPlayer2)
-print(testMatchListManager.divisionToString(8))
-print(testMatchListManager.divisionToString(16))
-testMatchListManager.insertPlayer(testPlayer3)
-testMatchListManager.insertPlayer(testPlayer4)
-testMatchListManager.insertPlayer(testPlayer5)
-testMatchListManager.insertPlayer(testPlayer6)
-testMatchListManager.insertPlayer(testPlayer7)
-testMatchListManager.insertPlayer(testPlayer8)
-testMatchListManager.insertPlayer(testPlayer9)
-testMatchListManager.insertPlayer(testPlayer10)
-testMatchListManager.insertPlayer(testPlayer12)
-print(testMatchListManager.divisionToString(8))
-print(testMatchListManager.divisionToString(16))
-testMatchListManager.insertPlayer(testPlayer11)
-print(testMatchListManager.divisionToString(8))
-print(testMatchListManager.finishedMatchesToString())
-print(testMatchListManager.popFinishedMatch())
